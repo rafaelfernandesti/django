@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-
+from django.http import Http404
 from .models import Question
 
 
@@ -14,7 +14,11 @@ def index(request):
 
 
 def detail(request, question_id):
-    return HttpResponse("Você está olhando para a questão: %s." % question_id)
+    try:
+        question = Question.objects.get(pk=question_id)
+    except Question.DoesNotExist:
+        raise Http404("Questão não existe!")
+    return render(request, "enquetes/detail.html", {"question": question})
 
 
 def results(request, question_id):
